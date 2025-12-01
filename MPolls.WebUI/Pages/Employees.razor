@@ -1,0 +1,52 @@
+@page "/employees"
+@using MPolls.WebUI.Services
+
+<MudPaper Class="pa-4 mb-4">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddEmployee">
+        Add Employee
+    </MudButton>
+</MudPaper>
+
+@if (_employees is null)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+else if (_employees.Count == 0)
+{
+    <p>No employees found.</p>
+}
+else
+{
+    <MudTable Items="_employees" Hover="true">
+        <HeaderContent>
+            <MudTh>First</MudTh>
+            <MudTh>Last</MudTh>
+            <MudTh>Email</MudTh>
+            <MudTh>Salary</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="First">@context.FirstName</MudTd>
+            <MudTd DataLabel="Last">@context.LastName</MudTd>
+            <MudTd DataLabel="Email">@context.Email</MudTd>
+            <MudTd DataLabel="Salary">@context.Salary</MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="() => EditEmployee(context)" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => DeleteEmployeeAsync(context.Id)" />
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
+<MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+    <MudGrid>
+        @foreach (var card in Cards)
+        {
+            <MudItem xs="12" sm="4">
+                <MudCard Class="center-card" onclick="@(() => NavigateToSurvey(card.Id))">
+                    <MudText Typo="Typo.h6">@card.Title</MudText>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+</MudContainer>

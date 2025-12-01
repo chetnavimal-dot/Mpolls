@@ -1,0 +1,29 @@
+@page "/error/500ServerError"
+@layout AuthLayout
+
+@* Generic failure surface for unexpected server errors so visitors receive recovery guidance. *@
+<MudPaper Class="mx-auto my-8 pa-8 text-center" Style="max-width:420px;">
+    <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Size="Size.Large" Color="Color.Warning" Class="mb-4" />
+    <MudText Typo="Typo.h3" Class="mb-2">500 · Oops!</MudText>
+    <MudText Typo="Typo.subtitle1" Class="mb-6 text-secondary">
+        Oops. Something went wrong on our side. Please try again or sign in to continue.
+    </MudText>
+
+    <MudStack Row="true" Spacing="2" Justify="Justify.Center">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/login" StartIcon="@Icons.Material.Filled.Login">
+            Login
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Href="/register" StartIcon="@Icons.Material.Filled.AppRegistration">
+            Register
+        </MudButton>
+    </MudStack>
+
+    <MudDivider Class="my-6" />
+
+    <MudStack AlignItems="AlignItems.Center" Spacing="1">
+        <MudIcon Icon="@Icons.Material.Filled.Support" Color="Color.Info" />
+        <MudText Typo="Typo.body2" Class="text-secondary">
+            Still stuck? Email <MudLink Href="mailto:support@mpolls.com">support@mpolls.com</MudLink> and we'll help you get back on track.
+        </MudText>
+    </MudStack>
+</MudPaper>

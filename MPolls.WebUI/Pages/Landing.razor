@@ -1,0 +1,20 @@
+@page "/"
+@layout AuthLayout
+
+<PageTitle>Welcome</PageTitle>
+
+<MudPaper Class="mx-auto my-6 pa-6 text-center" Style="max-width:400px;">
+    <MudText Typo="Typo.h4" Class="mb-2">Welcome to MPolls</MudText>
+    <MudText Typo="Typo.subtitle2" Class="mb-6">
+        Sign in to continue or create a new account to get started.
+    </MudText>
+
+    <MudStack Spacing="2">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="NavigateToLogin" FullWidth="true">
+            Login
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="NavigateToRegister" FullWidth="true">
+            Register
+        </MudButton>
+    </MudStack>
+</MudPaper>

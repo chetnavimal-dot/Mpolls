@@ -1,0 +1,57 @@
+@page "/profile"
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-6">
+    <MudPaper Class="pa-6">
+        <MudText Typo="Typo.h4" Class="mb-2">Profile</MudText>
+        <MudText Typo="Typo.body1">
+            View and manage your personal details for MPolls participation.
+        </MudText>
+
+        <MudDivider Class="my-4" />
+
+        <MudText Typo="Typo.h5" Class="mb-1">Survey Categories</MudText>
+        <MudText Typo="Typo.body2" Class="mb-4">
+            Explore the active survey categories available for your profile interests.
+        </MudText>
+
+        @if (_isLoading)
+        {
+            <div class="d-flex justify-center my-6">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+            </div>
+        }
+        else if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+        }
+        else if (_categories.Count == 0)
+        {
+            <MudAlert Severity="Severity.Info">No survey categories are available right now. Please check back soon.</MudAlert>
+        }
+        else
+        {
+            <MudGrid Class="mt-2" Spacing="5">
+                @foreach (var category in _categories)
+                {
+                    <MudItem xs="12" sm="6" md="4" lg="3">
+                        <MudPaper onclick="@(() => NavigateToCategory(category.CategoryId))" Class="category-card pa-4 d-flex justify-content-center align-items-center flex-column gap-3 h-100" Elevation="1" Style="align-items: center">
+                            <MudIcon Icon="@GetIcon(category)" Size="Size.Large" Color="Color.Primary" />
+                            <MudText Typo="Typo.body2" Class="category-card__name text-center">@category.CategoryName</MudText>
+                            <MudStack Row="true" Spacing="1">
+                                <MudChip T="string" Color="@(GetRewardDisplay(category) != "Not available" ? Color.Success : Color.Default)" Icon="@(GetRewardDisplay(category) != "Not available" ? @Icons.Material.Filled.EmojiEvents : "")">
+                                    @GetRewardDisplay(category)
+                                </MudChip>
+                                @if (!String.IsNullOrEmpty(GetRetakeDisplay(category)))
+                                {
+                                    <MudChip T="string" Color="Color.Warning" Icon="@Icons.Material.Filled.Refresh">
+                                        @GetRetakeDisplay(category)
+                                    </MudChip>
+                                }
+                            </MudStack>
+                        </MudPaper>
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+    </MudPaper>
+</MudContainer>

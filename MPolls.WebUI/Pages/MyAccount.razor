@@ -1,0 +1,147 @@
+@page "/my-account"
+
+<MudContainer MaxWidth="MaxWidth.False" Class="py-6">
+    <MudGrid Spacing="3">
+        <MudItem xs="12">
+            <MudPaper Class="pa-6">
+                <MudText Typo="Typo.h4" Class="mb-1">My Account</MudText>
+                <MudText Typo="Typo.body1" Class="mb-3">
+                    Manage your security and account tools from a single place.
+                </MudText>
+
+                <MudStack Row="true" Class="gap-3" AlignItems="AlignItems.Center">
+                    <MudChip T="string" Color="@(_emailVerified ? Color.Success : Color.Warning)"
+                             Variant="Variant.Filled"
+                             StartIcon="@(_emailVerified ? Icons.Material.Filled.Verified : Icons.Material.Filled.MarkEmailUnread)">
+                        @VerificationStatusLabel
+                    </MudChip>
+                    @if (!string.IsNullOrWhiteSpace(AccountEmail))
+                    {
+                        <MudText Typo="Typo.caption" Class="text-secondary">@AccountEmail</MudText>
+                    }
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        
+        @if (AuthState.CurrentUser.IsOnboarded)
+        {
+            <MudItem xs="12">
+                <MudPaper Class="pa-6 h-100">
+                    <MudText Typo="Typo.h5" Class="mb-2">Personal Details</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-4">
+                        Here’s what you’ve shared to help us tailor your experience.
+                    </MudText>
+                    
+                    <MudGrid>
+                        <MudItem xs="12" sm="4">
+                            <MudPaper Class="pa-4 d-flex flex-column align-center justify-center" Elevation="0" Outlined="true" Style="height: 100%">
+                                <MudText Typo="Typo.h4" Class="font-weight-bold">@AuthState.CurrentUser.Age</MudText>
+                                <MudText Typo="Typo.subtitle2" Class="d-flex gap-1">Age</MudText>
+                            </MudPaper>
+                        </MudItem>
+                        <MudItem xs="12" sm="4">
+                            <MudPaper Class="pa-4 d-flex flex-column align-center justify-center" Elevation="0" Outlined="true" Style="height: 100%">
+                                <MudText Typo="Typo.h4" Class="font-weight-bold">@AuthState.CurrentUser.Gender</MudText>
+                                <MudText Typo="Typo.subtitle2" Class="d-flex gap-1">Gender</MudText>
+                            </MudPaper>
+                        </MudItem>
+                        <MudItem xs="12" sm="4">
+                            <MudPaper Class="pa-4 d-flex flex-column align-center justify-center" Elevation="0" Outlined="true" Style="height: 100%">
+                                <MudText Typo="Typo.h4" Class="font-weight-bold">@AuthState.CurrentUser.Country</MudText>
+                                <MudText Typo="Typo.subtitle2" Class="d-flex gap-1">Country</MudText>
+                            </MudPaper>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </MudItem>
+        }
+
+        <MudItem xs="12">
+            <MudPaper Class="pa-6 h-100">
+                <MudText Typo="Typo.h5" Class="mb-2">Security</MudText>
+                <MudText Typo="Typo.body2" Class="mb-4">
+                    Request critical account actions. We'll send secure links to your primary email address.
+                </MudText>
+
+                <MudGrid>
+                    <MudItem xs="12" sm="12" md="6" lg="6">
+                        <MudPaper Class="pa-4 d-flex flex-column" Elevation="0" Outlined="true" Style="height: 100%">
+                            <MudText Typo="Typo.subtitle1" Class="mb-1">Password reset</MudText>
+                            <MudText Typo="Typo.caption" Class="text-secondary">
+                                Send yourself a one-time password reset link if you need to update your credentials.
+                            </MudText>
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Class="mt-4"
+                                       Style="width: 165px"
+                                       Disabled="@(!CanRequestPasswordChange)"
+                                       OnClick="SendPasswordResetAsync">
+                                @PasswordResetButtonLabel
+                            </MudButton>
+                            @if (!string.IsNullOrEmpty(_passwordResetFeedback))
+                            {
+                                <MudAlert Severity="@_passwordResetFeedbackSeverity" Class="mt-4">
+                                    @_passwordResetFeedback
+                                </MudAlert>
+                            }
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem xs="12" sm="12" md="6" lg="6">
+                        <MudPaper Class="pa-4 d-flex flex-column" Elevation="0" Outlined="true" Style="height: 100%">
+                            <MudText Typo="Typo.subtitle1" Class="mb-1">Email verification</MudText>
+                            <MudText Typo="Typo.caption" Class="text-secondary">
+                                We'll resend a verification link so you can confirm ownership of your email.
+                            </MudText>
+
+                            @if (ShowVerificationActions)
+                            {
+                                <MudButton Variant="Variant.Filled"
+                                           Color="Color.Secondary"
+                                           Class="mt-4"
+                                           Disabled="@(!CanSendVerification)"
+                                           OnClick="SendVerificationEmailAsync">
+                                    @VerificationButtonLabel
+                                </MudButton>
+                            }
+                            else
+                            {
+                                <MudAlert Severity="Severity.Success" Dense="true" Class="mt-4">
+                                    Your email address is verified and eligible for rewards redemption.
+                                </MudAlert>
+                            }
+
+                            @if (!string.IsNullOrEmpty(_verificationFeedback))
+                            {
+                                <MudAlert Severity="@_verificationFeedbackSeverity" Class="mt-3">
+                                    @_verificationFeedback
+                                </MudAlert>
+                            }
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudPaper Class="pa-6">
+                <MudText Typo="Typo.h5" Class="mb-2">Session tools</MudText>
+                <MudText Typo="Typo.body2" Class="mb-4">
+                    Keep your participation history tidy and stay on top of upcoming research.
+                </MudText>
+
+                <MudList T="AccountSessionHelper" Dense="true" Class="d-flex flex-column gap-4">
+                    @foreach (var helper in _sessionHelpers)
+                    {
+                        <MudContainer Class="d-flex align-start px-0 gap-2">
+                            <MudIcon Icon="@(helper.Icon)" Color="Color.Info" Class="mt-1"/>
+                            <div class="d-flex flex-column">
+                                <MudText Typo="Typo.subtitle1">@(helper.Title)</MudText>
+                                <MudText Typo="Typo.caption" Class="text-secondary">@(helper.Description)</MudText>
+                            </div>
+                        </MudContainer>
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>

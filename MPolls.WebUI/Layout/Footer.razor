@@ -1,0 +1,11 @@
+<MudPaper Class="pa-3 d-flex justify-center align-center footer" 
+          Elevation="1" 
+          Square="true">
+    <MudText Typo="Typo.body2" Class="text-center text-secondary">
+        &copy; @CurrentYear MPolls
+    </MudText>
+</MudPaper>
+
+@code {
+    private int CurrentYear = DateTime.Now.Year;
+}

@@ -1,0 +1,144 @@
+@page "/profile/categories/{CategoryId:int}"
+@using MPolls.WebUI.Models.Survey
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-6">
+    <MudStack Spacing="4">
+        <MudPaper Class="pa-6">
+            <MudStack Spacing="4">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h4">@(_category?.CategoryName ?? "Profile Details")</MudText>
+                    <MudText Typo="Typo.body2">
+                        Review the questions associated with this profile and manage your responses.
+                    </MudText>
+                    <MudDivider Class="my-4" />
+                </MudStack>
+
+                @if (ShowRewardGuidance)
+                {
+                    @if (RewardChipText != "0")
+                    {
+                        <MudContainer Class="px-0">
+                            <MudGrid Spacing="4">
+                                <MudItem sm="12" md="4" lg="4">
+                                    <MudCard Class="pa-4 d-flex flex-row gap-2" Style="height: 100%">
+                                        <MudIcon Icon="@Icons.Material.Filled.EmojiEvents" Color="Color.Primary" Size="Size.Large" Style="margin: 2px" />
+                                        <MudContainer Class="d-flex flex-column">
+                                            <MudText Typo="Typo.h4" Class="font-weight-bold">@RewardChipText</MudText>
+                                            <MudText Typo="Typo.subtitle2" Class="d-flex gap-1">
+                                                Reward Points
+                                            </MudText>
+                                        </MudContainer>
+                                    </MudCard>
+                                </MudItem>
+                                <MudItem sm="12" md="8" lg="8">
+                                    <MudCard Class="pa-4 d-flex flex-row gap-2" Style="height: 100%">
+                                        <MudStack Spacing="2">
+                                            @if (!string.IsNullOrWhiteSpace(ActionSupportingText))
+                                            {
+                                                <MudText Class="d-flex" Typo="Typo.body2">
+                                                    @ActionSupportingText
+                                                    <MudTooltip Text="@RewardPrimaryMessage">
+                                                        <MudIcon Icon="@Icons.Material.Outlined.Info" Size="Size.Small" Style="cursor: pointer"/>
+                                                    </MudTooltip>
+                                                </MudText>
+                                            }
+                                            <MudStack Row="true">
+                                                @if (IsActionDisabled)
+                                                {
+                                                    <MudButton Color="Color.Primary"
+                                                               Variant="Variant.Filled"
+                                                               Class="mt-1"
+                                                               Style="width: 175px"
+                                                               OnClick="StartOrRetakeSurvey">
+                                                        Update
+                                                    </MudButton>
+                                                }
+                                                
+                                                <MudButton Color="Color.Primary"
+                                                           Variant="Variant.Filled"
+                                                           Class="mt-1"
+                                                           Style="width: 175px"
+                                                           Disabled="@IsActionDisabled" 
+                                                           OnClick="StartOrRetakeSurvey">
+                                                    @ActionButtonText
+                                                </MudButton>
+                                            </MudStack>
+                                        </MudStack>
+                                    </MudCard>
+                                </MudItem>
+                            </MudGrid>
+                        </MudContainer>
+                    }
+                }
+                @if (_isLoading)
+                {
+                    <div class="d-flex justify-center my-6">
+                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large"/>
+                    </div>
+                }
+                else if (!string.IsNullOrWhiteSpace(_errorMessage))
+                {
+                    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+                }
+                else if (!HasQuestions)
+                {
+                    <MudAlert Severity="Severity.Info">
+                        Currently no questions are available for this profile. Please check back later.
+                    </MudAlert>
+                }
+                else {
+                    <MudAlert Severity="Severity.Info">
+                        To earn maximum rewards, complete the full profile. Partial profiles are not eligible for rewards.
+                    </MudAlert>
+                }
+            </MudStack>
+        </MudPaper>
+
+        @if (CanShowResponses)
+        {
+            var responses = Responses;
+            <MudPaper Class="pa-6" Variant="Variant.Outlined">
+                <MudStack Spacing="3">
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.h6">Your Responses</MudText>
+                        @if (!string.IsNullOrWhiteSpace(LastUpdatedOnText))
+                        {
+                            <MudText Typo="Typo.caption" Class="text-secondary">Last Updated on: @LastUpdatedOnText</MudText>
+                        }
+                    </MudStack>
+                    <MudList T="ProfileQuestionDetailModel" DisablePadding="true">
+                        @for (var index = 0; index < responses.Count; index++)
+                        {
+                            var question = responses[index];
+                            <MudListItem T="ProfileQuestionDetailModel" Class="py-3">
+                                <MudStack Spacing="1">
+                                    <MudText Typo="Typo.subtitle1">@question.QuestionText</MudText>
+                                    <MudStack Spacing="1">
+                                        @foreach (var answer in GetAnswers(question))
+                                        {
+                                            <MudText Typo="Typo.body2">
+                                                @if (!string.IsNullOrWhiteSpace(answer.MatrixRow))
+                                                {
+                                                    <strong>@answer.MatrixRow:</strong> @answer.Value
+                                                }
+                                                else
+                                                {
+                                                    @answer.Value
+                                                }
+                                            </MudText>
+                                        }
+                                    </MudStack>
+                                </MudStack>
+                            </MudListItem>
+
+                            @if (index < responses.Count - 1)
+                            {
+                                <MudDivider />
+                            }
+                        }
+                    </MudList>
+                </MudStack>
+            </MudPaper>
+        }
+    </MudStack>
+</MudContainer>

@@ -1,0 +1,145 @@
+@page "/surveys"
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-6">
+    <MudPaper Class="pa-6">
+        <MudText Typo="Typo.h4" Class="mb-2">Surveys</MudText>
+        <MudText Typo="Typo.body1" Class="mb-4">
+            Explore opportunities tailored to your MPolls profile.
+        </MudText>
+
+        <MudDivider Class="my-4" />
+
+        @if (_isLoading)
+        {
+            <MudStack AlignItems="AlignItems.Center" JustifyContent="Center" Spacing="2" Class="py-8">
+                <MudProgressCircular Color="Color.Primary" Size="Size.Large" />
+                <MudText Typo="Typo.body2">Loading your recommended surveys...</MudText>
+            </MudStack>
+        }
+        else
+        {
+            @if (!string.IsNullOrWhiteSpace(_errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="mb-4">@_errorMessage</MudAlert>
+            }
+
+            @if (_recommendedSurveys.Count == 0)
+            {
+                <MudAlert Severity="Severity.Info">
+                    Surveys will be recommended based on your profile. Check back soon to see new matches.
+                </MudAlert>
+            }
+            else
+            {
+                <MudText Typo="Typo.h5" Class="mb-2">Popular this month</MudText>
+                <MudText Typo="Typo.body2" Class="mb-4">
+                    High-value surveys recommended for you this month.
+                </MudText>
+                
+                <MudGrid>
+                    @foreach (var survey in PopularThisMonth)
+                    {
+                        <MudItem xs="12" md="6">
+                            <MudPaper Class="pa-3 d-flex flex-column justify-space-between" Elevation="0" Outlined="true" Style="height: 100%">
+                                <MudStack Spacing="1">
+                                    <MudText Typo="Typo.h6">@survey.SurveyName</MudText>
+
+                                    @if (!string.IsNullOrWhiteSpace(survey.SurveyDescription))
+                                    {
+                                        <MudText Typo="Typo.body2">@survey.SurveyDescription</MudText>
+                                    }
+                                </MudStack>
+                                
+
+                                <MudStack Spacing="1">
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceEvenly" Class="mt-4">
+                                        <MudStack AlignItems="AlignItems.Center">
+                                            <MudIcon Icon="@Icons.Material.Outlined.CalendarMonth" Color="Color.Success" Size="Size.Medium"/>
+                                            <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                                <MudText Align="Align.Center" Typo="Typo.caption" Class="text-secondary text-center">Assigned on</MudText>
+                                                <MudText Align="Align.Center" Typo="Typo.body1" Class="text-secondary text-center">@GetAssignedDisplay(survey)</MudText>
+                                            </MudStack>
+                                        </MudStack>
+                                        <MudStack AlignItems="AlignItems.Center">
+                                            <MudIcon Icon="@Icons.Material.Outlined.EmojiEvents" Color="Color.Primary" Size="Size.Medium"/>
+                                            <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                                <MudText Align="Align.Center" Typo="Typo.caption" Class="text-secondary text-center">Points</MudText>
+                                                <MudText Align="Align.Center" Typo="Typo.body1" Class="text-secondary text-center">@GetRewardDisplay(survey)</MudText>
+                                            </MudStack>
+                                        </MudStack>
+                                        <MudStack AlignItems="AlignItems.Center">
+                                            <MudIcon Icon="@Icons.Material.Outlined.CalendarMonth" Color="Color.Error" Size="Size.Medium"/>
+                                            <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                                <MudText Align="Align.Center" Typo="Typo.caption" Class="text-secondary text-center">Expires on</MudText>
+                                                <MudText Align="Align.Center" Typo="Typo.body1" Class="text-secondary text-center">@GetExpirationDisplay(survey)</MudText>
+                                            </MudStack>
+                                        </MudStack>
+                                    </MudStack>
+
+                                    <MudButton FullWidth="false" Variant="Variant.Outlined" Color="Color.Primary" Href="@survey.SurveyLink" Target="_blank" Rel="noopener noreferrer" Class="mt-3">
+                                        Start Now
+                                    </MudButton>
+                                </MudStack>
+                            </MudPaper>
+                        </MudItem>
+                    }
+                </MudGrid>
+            }
+        }
+    </MudPaper>
+    @if (_expiredThisWeek.Count > 0)
+    {
+        <MudPaper Class="pa-6 mt-4">
+            <MudText Typo="Typo.h5" Class="mb-2">Surveys That Closed This Week</MudText>
+            <MudText Typo="Typo.body2" Class="mb-4">
+                You recently missed these surveys. Don’t worry — more surveys are on the way!
+            </MudText>
+
+            <MudGrid>
+                @foreach (var survey in _expiredThisWeek)
+                {
+                    <MudItem xs="12" md="6">
+                        <MudPaper Class="pa-3 d-flex flex-column justify-space-between" Elevation="0"
+                                  Outlined="true" Style="height: 100%">
+                            <MudStack Spacing="1">
+                                <MudText Typo="Typo.h6">@survey.SurveyName</MudText>
+
+                                @if (!string.IsNullOrWhiteSpace(survey.SurveyDescription))
+                                {
+                                    <MudText Typo="Typo.body2">@survey.SurveyDescription</MudText>
+                                }
+                            </MudStack>
+
+
+                            <MudStack Spacing="1">
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceEvenly" Class="mt-4">
+                                    <MudStack AlignItems="AlignItems.Center">
+                                        <MudIcon Icon="@Icons.Material.Outlined.CalendarMonth" Color="Color.Success" Size="Size.Medium"/>
+                                        <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                            <MudText Align="Align.Center" Typo="Typo.caption" Class="text-secondary text-center">Assigned on</MudText>
+                                            <MudText Align="Align.Center" Typo="Typo.body1" Class="text-secondary text-center">@GetAssignedDisplay(survey)</MudText>
+                                        </MudStack>
+                                    </MudStack>
+                                    <MudStack AlignItems="AlignItems.Center">
+                                        <MudIcon Icon="@Icons.Material.Outlined.EmojiEvents" Color="Color.Primary" Size="Size.Medium"/>
+                                        <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                            <MudText Align="Align.Center" Typo="Typo.caption" Class="text-secondary text-center">Points</MudText>
+                                            <MudText Align="Align.Center" Typo="Typo.body1" Class="text-secondary text-center">@GetRewardDisplay(survey)</MudText>
+                                        </MudStack>
+                                    </MudStack>
+                                    <MudStack AlignItems="AlignItems.Center">
+                                        <MudIcon Icon="@Icons.Material.Outlined.CalendarMonth" Color="Color.Error" Size="Size.Medium"/>
+                                        <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                            <MudText Align="Align.Center" Typo="Typo.caption" Class="text-secondary text-center">Expired on</MudText>
+                                            <MudText Align="Align.Center" Typo="Typo.body1" Class="text-secondary text-center">@GetExpirationDisplay(survey)</MudText>
+                                        </MudStack>
+                                    </MudStack>
+                                </MudStack>
+                            </MudStack>
+                        </MudPaper>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudPaper>
+    }
+</MudContainer>

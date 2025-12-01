@@ -1,0 +1,29 @@
+@page "/error/403Forbidden"
+@layout AuthLayout
+
+@* Authenticated-only experiences forward anonymous visitors here so they receive consistent recovery guidance. *@
+<MudPaper Class="mx-auto my-8 pa-8 text-center" Style="max-width:420px;">
+    <MudIcon Icon="@Icons.Material.Filled.Lock" Size="Size.Large" Color="Color.Error" Class="mb-4" />
+    <MudText Typo="Typo.h3" Class="mb-2">403 · Oops!</MudText>
+    <MudText Typo="Typo.subtitle1" Class="mb-6 text-secondary">
+        Oops. You need permission to access this page.
+    </MudText>
+
+    <MudStack Row="true" Spacing="2" Justify="Justify.Center">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/login" StartIcon="@Icons.Material.Filled.Login">
+            Login
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Href="/register" StartIcon="@Icons.Material.Filled.AppRegistration">
+            Register
+        </MudButton>
+    </MudStack>
+
+    <MudDivider Class="my-6" />
+
+    <MudStack AlignItems="AlignItems.Center" Spacing="1">
+        <MudIcon Icon="@Icons.Material.Filled.Help" Color="Color.Info" />
+        <MudText Typo="Typo.body2" Class="text-secondary">
+            Need help regaining access? Email <MudLink Href="mailto:support@mpolls.com">support@mpolls.com</MudLink> and we'll assist you.
+        </MudText>
+    </MudStack>
+</MudPaper>

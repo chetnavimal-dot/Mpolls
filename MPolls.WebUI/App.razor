@@ -1,0 +1,13 @@
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(AuthLayout)">
+            @* Reuse the dedicated 404 surface without the primary navigation chrome. *@
+            <Error404NotFound />
+        </LayoutView>
+    </NotFound>
+</Router>

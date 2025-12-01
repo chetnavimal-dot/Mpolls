@@ -1,0 +1,18 @@
+namespace MPolls.Domain.Entities;
+
+public class SurveyCategory
+{
+    public int CategoryId { get; set; }
+
+    public bool IsActive { get; set; }
+
+    public string CategoryName { get; set; } = string.Empty;
+
+    public string? Icon { get; set; }
+
+    public int RewardPoints { get; set; }
+
+    public int RetakePoints { get; set; }
+
+    public int RetakePointsIssueFrequency { get; set; }
+}

@@ -1,0 +1,147 @@
+@page "/onboarding"
+
+<MudContainer MaxWidth="MaxWidth.False" Class="py-6">
+    @if (_isLoading)
+    {
+        <div class="d-flex justify-center my-10">
+            <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+        </div>
+    }
+    else
+    {
+        <MudGrid Spacing="3">
+            <MudItem xs="12">
+                <MudPaper Class="pa-6">
+                    <MudText Typo="Typo.h4" Class="mb-2">Onboarding</MudText>
+                    <MudText Typo="Typo.body1">
+                        Before we begin, we’d like to know a few basic details about you.
+                    </MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12">
+                @if (!IsOnboardingComplete)
+                {
+                    <MudPaper Class="pa-6">
+                        @if (CurrentStep == 1)
+                        {
+                            <MudText Typo="Typo.h6" Class="mb-4">What is your age?</MudText>
+                            <MudAutocomplete T="int?"
+                                             Label="Select your age"
+                                             @bind-Value="Age"
+                                             Dense="true"
+                                             Variant="Variant.Outlined"
+                                             SearchFunc="SearchAges"
+                                             ToStringFunc="@(a => a.HasValue ? a.Value.ToString() : string.Empty)"
+                                             Clearable="true"
+                                             ResetValueOnEmptyText="true"
+                                             Disabled="Ages.Count == 0" />
+
+                        }
+                        else if (CurrentStep == 2)
+                        {
+                            <MudText Typo="Typo.h6" Class="mb-4">Where are you from?</MudText>
+                            <MudAutocomplete T="int?"
+                                             Variant="Variant.Outlined"
+                                             Label="Select your country"
+                                             Dense="true"
+                                             Disabled="Countries.Count == 0"
+                                             Value="CountryCode"
+                                             ValueChanged="OnCountryChanged"
+                                             SearchFunc="SearchCountries"
+                                             ToStringFunc="GetCountryDisplay"
+                                             Clearable="true"
+                                             ResetValueOnEmptyText="true">
+                                <ItemTemplate Context="code">
+                                    @{
+                                        var c = Countries.FirstOrDefault(x => x.CountryCode == code);
+                                    }
+                                    @if (c != null)
+                                    {
+                                        <div>@c.CountryName (@c.CountryShortCode)</div>
+                                    }
+                                </ItemTemplate>
+                            </MudAutocomplete>
+                        }
+                        else if (CurrentStep == 3)
+                        {
+                            <MudText Typo="Typo.h6" Class="mb-4">What is your gender?</MudText>
+                            <MudGrid>
+                                <MudItem xs="12" sm="12" md="12" lg="12">
+                                    <MudRadioGroup T="int?" InputClass="d-flex flex-column align-start" @bind-Value="Gender">
+                                        @foreach (var option in GenderOptions)
+                                        {
+                                            <MudRadio T="int?" Color="Color.Primary" Value="@option.Key">@option.Value</MudRadio>
+                                        }
+                                    </MudRadioGroup>
+                                </MudItem>
+                            </MudGrid>
+                        }
+
+                        <div class="d-flex justify-end mt-6 gap-4">
+                            @if (CurrentStep > 1)
+                            {
+                                <MudButton Variant="Variant.Outlined" OnClick="GoPrevious" Style="width: 100px">Previous</MudButton>
+                            }
+
+                            @if (CurrentStep < 3)
+                            {
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GoNext" Disabled="@(!CanAdvanceToNextStep)" Style="width: 100px">Next</MudButton>
+                            }
+                            else
+                            {
+                                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CompleteOnboarding" Disabled="@(!CanCompleteOnboarding)" Style="width: 100px">Complete</MudButton>
+                            }
+                        </div>
+                    </MudPaper>
+                }
+                else
+                {
+                    <MudGrid>
+                        <MudItem xs="12" sm="6" md="6" lg="6">
+                            <MudPaper Class="pa-6 d-flex flex-column justify-center align-center gap-4" Style="height: 100%">
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Large" />
+                                <div>
+                                    <MudText Typo="Typo.h5" Class="font-weight-bold mb-1">Onboarding Complete</MudText>
+                                    <MudText Typo="Typo.body2">
+                                        Thanks for completing your onboarding.
+                                    </MudText>
+                                </div>
+                            </MudPaper>
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="6" lg="6">
+                            <MudPaper Class="pa-6 d-flex flex-column justify-start gap-4" Style="height: 100%">
+                                @if (!AuthState.CurrentUser.vFlag)
+                                {
+                                    <MudStack Row="true">
+                                        <MudIcon Icon="@Icons.Material.Filled.MarkEmailUnread" Color="Color.Info" Class="mt-1" Size="Size.Medium"/>
+                                        <div class="d-flex flex-column">
+                                            <MudText Typo="Typo.subtitle1">Verify your email address</MudText>
+                                            <MudText Typo="Typo.caption" Class="text-secondary">Confirm the link we sent to your email to start redeeming rewards faster.</MudText>
+                                        </div>
+                                    </MudStack>
+                                }
+                                else
+                                {
+                                    <MudStack Row="true">
+                                        <MudIcon Icon="@Icons.Material.Filled.ManageAccounts" Color="Color.Info" Class="mt-1" Size="Size.Medium"/>
+                                        <div class="d-flex flex-column">
+                                            <MudText Typo="Typo.subtitle1">Review your profile interests</MudText>
+                                            <MudText Typo="Typo.caption" Class="text-secondary">Refresh your category preferences so we can match you to the best surveys.</MudText>
+                                        </div>
+                                    </MudStack>
+                                    <MudStack Row="true">
+                                        <MudIcon Icon="@Icons.Material.Filled.NotificationsActive" Color="Color.Info" Class="mt-1" Size="Size.Medium"/>
+                                        <div class="d-flex flex-column">
+                                            <MudText Typo="Typo.subtitle1">Check new surveys</MudText>
+                                            <MudText Typo="Typo.caption" Class="text-secondary">Visit the surveys page to take the latest studies matched to you.</MudText>
+                                        </div>
+                                    </MudStack>
+                                }
+                            </MudPaper>
+                        </MudItem>
+                    </MudGrid>
+                }
+            </MudItem>
+        </MudGrid>
+    }
+</MudContainer>

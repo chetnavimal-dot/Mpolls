@@ -1,0 +1,11 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+.DS_Store
+/.idea
+MPolls.WebUI/.DS_Store
+MPolls.WebUI/.DS_Store
+MPolls.API/app/secret/serviceAccountKey.json
+MPolls.API/appsettings.Development.json

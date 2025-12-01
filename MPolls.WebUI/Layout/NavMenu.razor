@@ -1,0 +1,46 @@
+<MudPaper Class="navmenu-shell" Square="true" Elevation="0">
+    <div class="navmenu-content">
+        <div class="navmenu-section">
+            <MudText Typo="Typo.overline" Class="navmenu-section-label">Navigation</MudText>
+            <MudNavMenu Class="navmenu-links" Dense="true">
+                @if (IsAuthenticated)
+                {
+                    @* Authenticated panelists receive the full navigation surface. Anonymous users land on marketing pages instead. *@
+                    <MudNavLink Href="/onboarding" Icon="@Icons.Material.Filled.RocketLaunch" Match="NavLinkMatch.All">Onboarding</MudNavLink>
+                    <MudNavLink Disabled="!AuthState.CurrentUser.IsOnboarded" Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All">Dashboard</MudNavLink>
+                    <MudNavLink Disabled="!AuthState.CurrentUser.IsOnboarded" Href="/profile" Icon="@Icons.Material.Filled.Person">Profile</MudNavLink>
+                    <MudNavLink Disabled="!AuthState.CurrentUser.IsOnboarded" Href="/surveys" Icon="@Icons.Material.Filled.Ballot">Surveys</MudNavLink>
+                    <MudNavLink Disabled="!AuthState.CurrentUser.IsOnboarded" Href="/rewards" Icon="@Icons.Material.Filled.CardGiftcard">Rewards</MudNavLink>
+                }
+            </MudNavMenu>
+        </div>
+
+        @if (IsAuthenticated)
+        {
+            <div class="navmenu-section">
+                <MudText Typo="Typo.overline" Class="navmenu-section-label">Account</MudText>
+                <MudNavMenu Class="navmenu-links" Dense="true">
+                    <MudNavLink Href="/my-account" Icon="@Icons.Material.Filled.ManageAccounts">My Account</MudNavLink>
+                </MudNavMenu>
+            </div>
+        }
+
+        @if (ShowVerificationAlert)
+        {
+            <MudPaper Class="navmenu-alert" Elevation="0" Outlined="true">
+                <MudStack>
+                    <MudStack Row="true">
+                        <MudIcon Icon="@Icons.Material.Filled.MarkEmailUnread" Class="navmenu-alert-icon"/>
+                        <div class="navmenu-alert-text">
+                            <MudText Typo="Typo.subtitle2"><b>Verify your email</b></MudText>
+                        </div>
+                    </MudStack>
+                    <MudText Typo="Typo.subtitle2">Complete verification to unlock all survey features.</MudText>
+                </MudStack>
+            </MudPaper>
+        }
+        <div class="navmenu-footer">
+            <MudText Typo="Typo.caption">© @CurrentYear MPolls</MudText>
+        </div>
+    </div>
+</MudPaper>

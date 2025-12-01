@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "MPolls.API\\MPolls.API.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "MPolls.WebUI\\MPolls.WebUI.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

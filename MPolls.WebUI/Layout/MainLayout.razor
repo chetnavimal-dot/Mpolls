@@ -1,0 +1,46 @@
+@inherits LayoutComponentBase
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+<MudPopoverProvider />
+
+<MudLayout>
+    <MudDrawer Class="drawer" @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always">
+        <NavMenu />
+    </MudDrawer>
+
+    <MudMainContent Class="main-container">
+        <MudAppBar Elevation="1" Dense="true" Class="main-appbar" Style="background: white">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="ToggleDrawer" />
+            <MudText Typo="Typo.h6">MPolls</MudText>
+            <MudSpacer />
+            @if (IsAuthenticated)
+            {
+                <MudMenu AriaLabel="Open user menu">
+                    <ActivatorContent>
+                        <MudButton Variant="Variant.Text"
+                                   Color="Color.Inherit"
+                                   EndIcon="@Icons.Material.Filled.ArrowDropDown"
+                                   Class="mud-typography mud-typography-subtitle2">
+                            @UserEmail
+                        </MudButton>
+                    </ActivatorContent>
+                    <ChildContent>
+                        <MudMenuItem Icon="@Icons.Material.Filled.AccountCircle" Href="/my-account">
+                            My Account
+                        </MudMenuItem>
+                        <MudMenuItem Icon="@Icons.Material.Filled.Logout" OnClick="LogoutAsync">
+                            Logout
+                        </MudMenuItem>
+                    </ChildContent>
+                </MudMenu>
+            }
+        </MudAppBar>
+        <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+    
+    <Footer />
+</MudLayout>

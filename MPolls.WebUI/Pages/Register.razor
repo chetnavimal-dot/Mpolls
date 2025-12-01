@@ -1,0 +1,51 @@
+@page "/register"
+@layout AuthLayout
+
+<PageTitle>Register</PageTitle>
+
+<MudPaper Class="mx-auto my-6 pa-6 gap-4" Style="max-width:400px;">
+    @if (_registrationResponse is not null)
+    {
+        <MudAlert Severity="Severity.Success" Class="my-4">
+            <MudText Typo="Typo.subtitle1">Registration successful!</MudText>
+            <MudText Typo="Typo.body2">A verification email has been sent to @_registrationResponse.Email.</MudText>
+        </MudAlert>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" Href="/login" Class="mt-2 d-inline-block">Proceed to login</MudButton>
+    }
+    else
+    {
+        <MudText Typo="Typo.h5" Class="mb-2">Create an account</MudText>
+        <MudText Typo="Typo.subtitle2" Class="mb-4">Register with your email and password to get started.</MudText>
+
+        <EditForm EditContext="_editContext" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+
+            <MudTextField Label="Email" @bind-Value="_model.Email" For="@(() => _model.Email)" Required="true" Immediate="true"/>
+            <MudTextField Label="Password" @bind-Value="_model.Password" For="@(() => _model.Password)" InputType="InputType.Password" Required="true" Immediate="true" Class="mt-4"/>
+            <MudTextField Label="Confirm password" @bind-Value="_model.ConfirmPassword" For="@(() => _model.ConfirmPassword)" InputType="InputType.Password" Required="true" Immediate="true" Class="mt-4"/>
+            <MudCheckBox @bind-Value="HasUserConsented" Class="mt-5 consent-check">
+                <MudText Typo="Typo.body2">
+                    By checking this box, you agree to the <MudLink Href="#" Underline="Underline.None" Typo="Typo.body2">Terms of Use</MudLink> and our <MudLink Href="#" Underline="Underline.None" Typo="Typo.body2">Privacy Policy</MudLink>.
+                </MudText>
+            </MudCheckBox>
+
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="_isSubmitting || !HasUserConsented" Class="mt-4">
+                @if (_isSubmitting)
+                {
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Style="margin-right:12px;"/>
+                }
+                Register
+            </MudButton>
+        </EditForm>
+
+        @if (!string.IsNullOrWhiteSpace(_errorMessage))
+        {
+            <MudAlert Severity="Severity.Error" Class="mt-4">@_errorMessage</MudAlert>
+        }
+
+        <MudText Typo="Typo.body2" Class="mt-6">
+            Already a member? <MudLink Href="/login" Underline="Underline.None" Typo="Typo.body2">Log in instead.</MudLink>
+        </MudText>
+    }
+</MudPaper>

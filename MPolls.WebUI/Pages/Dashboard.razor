@@ -1,0 +1,99 @@
+@page "/dashboard"
+
+<MudContainer MaxWidth="MaxWidth.False" Class="py-6">
+    @if (_isLoading)
+    {
+        <div class="d-flex justify-center my-10">
+            <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+        </div>
+    }
+    else
+    {
+        <MudGrid Spacing="3">
+            <MudItem xs="12">
+                <MudPaper Class="pa-6">
+                    <MudText Typo="Typo.h4" Class="mb-2">Dashboard</MudText>
+                    <MudText Typo="Typo.body1">
+                        Welcome, @_overview.GreetingName! Here's the latest on your MPolls activity.
+                    </MudText>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudGrid Spacing="3">
+                    @foreach (var stat in _overview.Stats)
+                    {
+                        <MudItem xs="12" sm="6" lg="3">
+                            <MudPaper Class="pa-4 h-100">
+                                <div class="d-flex align-items-center gap-4">
+                                    <MudIcon Icon="@stat.Icon" Color="@stat.Color" Size="Size.Large" />
+                                    <div>
+                                        <MudText Typo="Typo.h5" Class="mb-1">@stat.Value</MudText>
+                                        <MudText Typo="Typo.subtitle2">@stat.Label</MudText>
+                                        <MudText Typo="Typo.caption" Class="text-secondary">@stat.Description</MudText>
+                                    </div>
+                                </div>
+                            </MudPaper>
+                        </MudItem>
+                    }
+                </MudGrid>
+            </MudItem>
+
+            <MudItem xs="12" lg="6">
+                <MudPaper Class="pa-6 h-100">
+                    <MudText Typo="Typo.h5" Class="mb-2">Upcoming surveys</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-4">
+                        Stay current with new opportunities matched to your profile.
+                    </MudText>
+
+                    @if (_overview.UpcomingSurveys.Count == 0)
+                    {
+                        <MudAlert Severity="Severity.Info">
+                            You're all caught up. Check back later for new surveys.
+                        </MudAlert>
+                    }
+                    else
+                    {
+                        <MudList T="DashboardSurveySummary" Dense="true">
+                            @foreach (var survey in _overview.UpcomingSurveys)
+                            {
+                                <MudListItem T="DashboardSurveySummary" Class="d-flex align-items-start gap-4">
+                                    <MudIcon Icon="@survey.Icon" Color="Color.Primary" Class="mt-1" />
+                                    <div class="d-flex flex-column flex-grow-1">
+                                        <MudText Typo="Typo.subtitle1">@survey.Title</MudText>
+                                        <MudText Typo="Typo.caption" Class="text-secondary">@survey.Details</MudText>
+                                    </div>
+                                    <MudChip T="string" Color="Color.Secondary" Variant="Variant.Outlined">@survey.Reward</MudChip>
+                                </MudListItem>
+                            }
+                        </MudList>
+                    }
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" lg="6">
+                <MudPaper Class="pa-6 h-100">
+                    <MudText Typo="Typo.h5" Class="mb-2">Next steps</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-4">
+                        Complete these quick actions to stay in sync with the community.
+                    </MudText>
+
+                    <MudList T="DashboardActionItem" Dense="true">
+                        @foreach (var action in _overview.NextSteps)
+                        {
+                            <MudListItem T="DashboardActionItem">
+                                <div class="d-flex align-items-start gap-4">
+                                    <MudIcon Icon="@action.Icon" Color="Color.Info" Class="mt-1"/>
+                                    <div class="d-flex flex-column">
+                                        <MudText Typo="Typo.subtitle1">@action.Title</MudText>
+                                        <MudText Typo="Typo.caption" Class="text-secondary">@action.Description</MudText>
+                                    </div>
+                                </div>
+                            </MudListItem>
+                        }
+                    </MudList>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    }
+</MudContainer>

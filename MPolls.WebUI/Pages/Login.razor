@@ -1,0 +1,39 @@
+@page "/login"
+@layout AuthLayout
+
+<PageTitle>Login</PageTitle>
+
+<MudPaper Class="mx-auto my-6 pa-6" Style="max-width:400px;">
+    <MudText Typo="Typo.h5" Class="mb-2">Login</MudText>
+    <MudText Typo="Typo.subtitle2" Class="mb-4">Access your account using your email and password.</MudText>
+
+    <EditForm EditContext="_editContext" OnValidSubmit="HandleValidSubmit">
+        <SubmitOnlyDataAnnotationsValidator />
+        <ValidationSummary />
+
+        <MudTextField Label="Email" @bind-Value="_model.Email" For="@(() => _model.Email)" Immediate="true" />
+        <MudTextField Label="Password" @bind-Value="_model.Password" For="@(() => _model.Password)" InputType="InputType.Password" Immediate="true" Class="mt-4" />
+
+        <div class="d-flex justify-space-between align-center mt-4">
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="_isSubmitting">
+                @if (_isSubmitting)
+                {
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Style="margin-right:12px;" />
+                }
+                Login
+            </MudButton>
+            <MudLink Href="/reset-password">Forgot password?</MudLink>
+        </div>
+    </EditForm>
+
+    <MudText Typo="Typo.body2" Class="mt-4 text-center">
+        New to MPolls?
+        <MudLink Href="/register" Style="margin-left: 4px;">Register here</MudLink>
+    </MudText>
+    
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <MudAlert Severity="Severity.Error" Class="mt-4 mx-auto" Style="max-width:400px;">@_errorMessage</MudAlert>
+    }
+</MudPaper>
+

@@ -1,0 +1,17 @@
+@using MPolls.WebUI.Models
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="Model" @ref="_form">
+            <MudTextField Class="mb-3" @bind-Value="Model.FirstName" Label="First name" Required="true" />
+            <MudTextField Class="mb-3" @bind-Value="Model.LastName" Label="Last name" Required="true" />
+            <MudTextField Class="mb-3" @bind-Value="Model.Email" Label="Email" Required="true" />
+            <MudNumericField Class="mb-3" @bind-Value="Model.Salary" Label="Salary" />
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+

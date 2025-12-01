@@ -1,0 +1,131 @@
+@page "/rewards"
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-6">
+    <MudPaper Class="pa-6">
+        <MudText Typo="Typo.h4" Class="mb-2">Rewards</MudText>
+        <MudText Typo="Typo.body1">
+            Track your reward history and learn how to redeem your earnings.
+        </MudText>
+        
+        <MudGrid Spacing="5" Class="mt-4">
+            <MudItem xs="12" sm="6" lg="3">
+                <MudCard Class="pa-4 d-flex flex-row gap-2">
+                    <MudIcon Icon="@Icons.Material.Filled.EmojiEvents" Color="Color.Primary" Size="Size.Large" Style="margin: 2px" />
+                    <MudContainer Class="d-flex flex-column">
+                        <MudText Typo="Typo.h4" Class="font-weight-bold">@RewardDetails.TotalRewardEarned</MudText>
+                        <MudText Typo="Typo.subtitle2" Class="d-flex gap-1">
+                            Earned
+                            <MudTooltip Text="Total reward points you’ve earned so far from completing surveys.">
+                                <MudIcon Icon="@Icons.Material.Outlined.Info" Size="Size.Small" Style="cursor: pointer"/>
+                            </MudTooltip>
+                        </MudText>
+                    </MudContainer>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" sm="6" lg="3">
+                <MudCard Class="pa-4 d-flex flex-row gap-2">
+                    <MudIcon Icon="@Icons.Material.Filled.AccountBalanceWallet" Color="Color.Secondary" Size="Size.Large" Style="margin: 2px" />
+                    <MudContainer Class="d-flex flex-column">
+                        <MudText Typo="Typo.h4" Class="font-weight-bold">@RewardDetails.TotalRewardAvailable</MudText>
+                        <MudText Typo="Typo.subtitle2" Class="d-flex gap-1">
+                            Available 
+                            <MudTooltip Text="Reward points currently available in your account and eligible for redemption.">
+                                <MudIcon Icon="@Icons.Material.Outlined.Info" Size="Size.Small" Style="cursor: pointer"/>
+                            </MudTooltip>
+                        </MudText>
+                    </MudContainer>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" sm="6" lg="3">
+                <MudCard Class="pa-4 d-flex flex-row gap-2">
+                    <MudIcon Icon="@Icons.Material.Filled.Redeem" Color="Color.Success" Size="Size.Large" Style="margin: 2px" />
+                    <MudContainer Class="d-flex flex-column">
+                        <MudText Typo="Typo.h4" Class="font-weight-bold">@RewardDetails.TotalRewardClaimed</MudText>
+                        <MudText Typo="Typo.subtitle2" Class="d-flex gap-1">
+                            Claimed
+                            <MudTooltip Text="Total reward points you’ve already claimed through redemptions.">
+                                <MudIcon Icon="@Icons.Material.Outlined.Info" Size="Size.Small" Style="cursor: pointer"/>
+                            </MudTooltip>
+                        </MudText>
+                    </MudContainer>
+                </MudCard>
+            </MudItem>
+            
+            <MudItem xs="12" sm="6" lg="3">
+                <MudCard Class="pa-4 d-flex flex-row gap-2">
+                    <MudIcon Icon="@Icons.Material.Filled.History" Color="Color.Info" Size="Size.Large" Style="margin: 2px" />
+                    <MudContainer Class="d-flex flex-column">
+                        <MudText Typo="Typo.h4" Class="font-weight-bold">@RewardDetails.TotalRewardExpired</MudText>
+                        <MudText Typo="Typo.subtitle2" Class="d-flex gap-1">
+                            Expired
+                            <MudTooltip Text="Reward points that have reached their expiry and removed from your available balance.">
+                                <MudIcon Icon="@Icons.Material.Outlined.Info" Size="Size.Small" Style="cursor: pointer"/>
+                            </MudTooltip>
+                        </MudText>
+                    </MudContainer>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+
+        <MudGrid Class="mt-4" Justify="Justify.FlexEnd">
+            <MudItem xs="12" sm="6" Style="display: flex; justify-content: flex-end;">
+                <MudButton Color="Color.Primary"
+                           Variant="Variant.Filled">
+                    Redeem
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+
+        <MudDataGrid T="RewardEntry"
+                     Items="@RewardDetails.RewardEntries"
+                     Hover="true"
+                     Dense="true"
+                     Striped="true"
+                     Outlined="true"
+                     Elevation="0"
+                     Bordered="true"
+                     Filterable="false"
+                     Class="all-surveys-grid mt-4">
+            <Columns>
+                <TemplateColumn Title="Sr. No" Sortable="false">
+                    <CellTemplate Context="context">
+                        @(RewardDetails.RewardEntries.ToList().IndexOf(context.Item) + 1)
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn T="RewardEntry" TProperty="string"
+                                Property="s => s.Description"
+                                Title="Comments">
+                    <CellTemplate Context="context">
+
+                        <MudStack Row="true" AlignItems="AlignItems.Start" Spacing="1">
+                            <MudText>@context.Item.Description</MudText>
+                            @if (IsExpired(context.Item))
+                            {
+                                <MudChip T="string" Size="Size.Small" Color="Color.Error" Variant="Variant.Outlined" Label="true">Expired</MudChip>
+                            }
+                        </MudStack>
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn T="RewardEntry" TProperty="DateTime"
+                                Property="s => s.CompletedOn"
+                                Title="Date of Completion">
+                    <CellTemplate Context="context">
+                        @context.Item.CompletedOn.ToString("dd MMM, yyyy")
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn T="RewardEntry" TProperty="int"
+                                Property="s => s.Points"
+                                Title="Points">
+                    <CellTemplate Context="context">
+                        @context.Item.Points
+                    </CellTemplate>
+                </PropertyColumn>
+            </Columns>
+            <NoRecordsContent>
+                <MudText Class="p-4" Align="Align.Center">No Rewards found</MudText>
+            </NoRecordsContent>
+        </MudDataGrid>
+    </MudPaper>
+</MudContainer>
